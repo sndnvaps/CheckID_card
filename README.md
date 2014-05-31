@@ -2,9 +2,11 @@
  
 [![Build Status](https://travis-ci.org/sndnvaps/CheckID_card.svg?branch=master)](http://travis-ci.org/sndnvaps/CheckID_card)
 
-<p> 
-CheckID_card document
+
+
+
 CheckID_card 用来检验身份证的正确性
+
 计算方法如下:
 
  	ai -> a1 , a2, a3, a4, a5, a6... a17 (a18 是校验码) 身份证前17位对应(ai)
@@ -40,7 +42,7 @@ CheckID_card 用来检验身份证的正确性
  
  
  
-</p>
+
 
 
 
