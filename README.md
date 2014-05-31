@@ -1,5 +1,8 @@
 #用于检验身份证的正确性，主要针对第二代身份证（18位）
- <p> 
+ 
+[![Build Status](https://travis-ci.org/sndnvaps/CheckID_card.svg?branch=master)](http://travis-ci.org/sndnvaps/CheckID_card)
+
+<p> 
 CheckID_card document
 CheckID_card 用来检验身份证的正确性
 计算方法如下:
