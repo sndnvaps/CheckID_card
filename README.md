@@ -3,6 +3,19 @@
 [![Build Status](https://travis-ci.org/sndnvaps/CheckID_card.svg?branch=master)](http://travis-ci.org/sndnvaps/CheckID_card)
 
 
+[![Gobuild Download](http://beta.gobuild.io/badge/github.com/sndnvaps/CheckID_card/download.png)](http://beta.gobuild.io/github.com/sndnvaps/CheckID_card)
+
+
+
+下载：
+
+got: tool for gobuild
+
+	got install github.com/sndnvaps/CheckID_card
+	
+if you are in linux and not have got installed
+
+	bash -c "$(curl http://beta.gobuild.io/install_got.sh)" got install github.com/sndnvaps/CheckID_card
 
 
 CheckID_card 用来检验身份证的正确性
