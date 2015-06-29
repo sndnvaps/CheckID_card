@@ -45,6 +45,47 @@ func checkYMD(ymd string) string { // 19910821 -> 1991 ,08, 21
 
 */
 
+/*
+bool CheckFifteenCard(const string& idCard)
+{
+    // 验证出生日期是否正确
+    string strBirthDay = idCard.substr(6, 6); // 身份证第6位到第11位为出生日期
+    string strYear = strBirthDay.substr(0,2); // 年份 15位身份证只有88-->1988年
+    string strMonth = strBirthDay.substr(2,2);
+    string strDay = strBirthDay.substr(4,2);
+
+    int birthDay = atoi(strBirthDay.c_str());
+    int year = atoi(strYear.c_str()) + 1900;
+    int month = atoi(strMonth.c_str());
+    int day = atoi(strDay.c_str());
+    cout << " birthDay = " << birthDay << " year = " << year << " month=" << month << " day = " << day << endl;
+    // 系统当前时间
+    time_t tt = time(NULL);
+    tm* t= localtime(&tt);
+    int nowYear = t->tm_year + 1900;
+    cout << " nowYear = " << nowYear << endl;
+    if (year >= nowYear )
+    {
+        cout << " invalid year = " << year;
+        return false;
+    }
+    if (month < 1 || month > 12)
+    {
+        cout << " invalid month = " << month;
+        return false;
+    }
+
+    if (day < 1 || day > 31)
+    {
+        cout << " invalid day = " << day;
+        return false;
+    }
+    // 15位身份证无校验码
+    return true;
+}
+
+*/
+
 import (
 	"fmt"
 	"strconv"
@@ -114,6 +155,30 @@ func byte2int(x string) int {
 	res, _ := strconv.Atoi(x)
 
 	return res
+}
+func convert15to18(idcard string) string { //将15位身份证转换为18位的
+	//例子： 130503 670401 001
+	DateOf15 := idcard[6:12] // 6-12位为日期 67 04 01 ，即为67年，04月，01日
+	//DateOf15 == 670401
+	Head := idcard[:6]                         //身份证前6位 130503
+	Tail := idcard[12:]                        //身份证后3位
+	NewIDCard := Head + "19" + DateOf15 + Tail //在年份前添加19 即修改为  130503 19670401 001 ,变成17位
+	fmt.Printf("NewIDCard of 15 to 18\n")
+	fmt.Printf("15 == %s\n", idcard)
+	fmt.Printf("18 == %s\n", NewIDCard)
+
+	NewIDCard_ := Add18BitToIDCard(NewIDCard)
+
+	return NewIDCard_
+
+}
+
+func Add18BitToIDCard(idcard string) string { //15位身份证转换成18位身份证，最后一步，添加验证码，即第18位
+	verify_ := check_id(idcard) //通过计算得到最后一位的验证码
+	NewID := idcard + strconv.FormatInt(int64(verify_), 32)
+	fmt.Printf("15 to 18 = %s\n", NewID)
+	return NewID
+
 }
 
 func check_id(id string) int { // len(id)= 17
@@ -185,7 +250,7 @@ func verify_id(verify int, id_v int) (bool, string) {
 }
 
 func usage() {
-	fmt.Println("请输入要检查的身份证号码18位\n")
+	fmt.Println("请输入要检查的身份证号码15或者18位\n")
 }
 
 func main() {
@@ -198,8 +263,8 @@ func main() {
 	fmt.Printf("身份证号码是 = %s\n", id_card_string)
 	//fmt.Println("id_card_string len = ", len(id_card_string))
 
-	if len(id_card_string) < 18 {
-		panic("必须要输入18位的身份证号码")
+	if len(id_card_string) != 18 && len(id_card_string) != 15 {
+		panic("必须要输入18位或者15位的身份证号码")
 	}
 
 	// 将字符串，转换成[]byte,并保存到id_card[]数组当中
@@ -209,9 +274,20 @@ func main() {
 		}
 	*/
 
-	YearMonthDay := id_card_string[6:14]
-	fmt.Println("身份证包含的日期: ", YearMonthDay)
-	PrintDate(YearMonthDay)
+	switch len(id_card_string) {
+	case 15:
+		fmt.Printf("15to18 = %s\n", convert15to18(id_card_string))
+
+	case 18:
+		fmt.Println(verify_id(check_id(id_card_string[:17]), byte2int(id_card_string[17:])))
+
+	}
+
+	/*
+		YearMonthDay := id_card_string[6:14]
+		fmt.Println("身份证包含的日期: ", YearMonthDay)
+		PrintDate(YearMonthDay)
+	*/
 
 	//复制id_card[18]前17位元素到id_card_copy[]数组当中
 	/*
@@ -231,9 +307,9 @@ func main() {
 		fmt.Println(y)
 	*/
 
-	CheckYMD(PrintDate(YearMonthDay))
-	fmt.Println(verify_id(check_id(id_card_string[:17]), byte2int(id_card_string[17:])))
+	//CheckYMD(PrintDate(YearMonthDay))
 }
 
 //测试身份证号码：34052419800101001X
 //测试身份证号码：511028199507215915
+//测试15位身份证： 130503 670401 001
