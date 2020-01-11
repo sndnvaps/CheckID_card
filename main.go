@@ -88,9 +88,13 @@ bool CheckFifteenCard(const string& idCard)
 
 import (
 	"fmt"
+	"os"
+	"sort"
 	"strconv"
+
 	//"os"
 	//"strings"
+	cli "gopkg.in/urfave/cli.v1"
 )
 
 func PrintDate(date string) (string, string, string) {
@@ -118,7 +122,7 @@ func IsLeapYear(y string) bool { //y == 2000, 2004
 }
 
 func CheckYMD(y, m, d string) (bool, string) {
-	//检查年份，假设现在最大的时间为2015年，当超过这个时间点，就显示错误
+	//检查年份，假设现在最大的时间为2020年，当超过这个时间点，就显示错误
 	/* 月份最大为12， 日期最大为 31，
 	如果是2月，最大为29，最小为28
 	*/
@@ -126,7 +130,7 @@ func CheckYMD(y, m, d string) (bool, string) {
 	month, _ := strconv.Atoi(m)
 	day, _ := strconv.Atoi(d)
 
-	if year > 2015 {
+	if year > 2020 {
 		return false, "out of year "
 	}
 
@@ -249,65 +253,48 @@ func verify_id(verify int, id_v int) (bool, string) {
 	return false, "验证失败"
 }
 
-func usage() {
-	fmt.Println("请输入要检查的身份证号码15或者18位\n")
+func Run(ctx *cli.Context) error {
+	id := ctx.String("id")
+	if id == "" || (len(id) > 18 || len(id) < 15 || len(id) == 16 || len(id) == 17) {
+		cli.ShowAppHelpAndExit(ctx, 0)
+		return nil
+	}
+
+	switch len(id) {
+	case 15:
+		fmt.Printf("15位旧身份证号码转18位 = %s\n", convert15to18(id))
+
+	case 18:
+		fmt.Println(verify_id(check_id(id[:17]), byte2int(id[17:])))
+
+	}
+	return nil
 }
 
 func main() {
-	/*
-		var id_card [18]byte // 'X' == byte(88)， 'X'在byte中表示为88
-		var id_card_copy [17]byte
-	*/
-	var id_card_string string
-	fmt.Scanf("%s", &id_card_string)
-	fmt.Printf("身份证号码是 = %s\n", id_card_string)
-	//fmt.Println("id_card_string len = ", len(id_card_string))
-
-	if len(id_card_string) != 18 && len(id_card_string) != 15 {
-		panic("必须要输入18位或者15位的身份证号码")
+	app := cli.NewApp()
+	app.Name = "id-card-check"
+	app.Usage = "主要是验证18位身份证是否正确；转换15位的旧身份证到18位"
+	app.Version = "0.5.0"
+	app.Authors = []cli.Author{
+		cli.Author{
+			Name:  "sndnvaps",
+			Email: "sndnvaps@gmail.com",
+		},
+	}
+	app.Copyright = "(c) 2014 - 2020 Jimes Yang<sndnvaps@gmail.com>"
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "id",
+			Usage: "验证的18位身份证号码，或者是需要转换的15位旧身份证号码",
+		},
 	}
 
-	// 将字符串，转换成[]byte,并保存到id_card[]数组当中
-	/*
-		for k, v := range []byte(id_card_string) {
-			id_card[k] = byte(v)
-		}
-	*/
+	app.Action = Run
 
-	switch len(id_card_string) {
-	case 15:
-		fmt.Printf("15to18 = %s\n", convert15to18(id_card_string))
+	sort.Sort(cli.FlagsByName(app.Flags))
 
-	case 18:
-		fmt.Println(verify_id(check_id(id_card_string[:17]), byte2int(id_card_string[17:])))
-
-	}
-
-	/*
-		YearMonthDay := id_card_string[6:14]
-		fmt.Println("身份证包含的日期: ", YearMonthDay)
-		PrintDate(YearMonthDay)
-	*/
-
-	//复制id_card[18]前17位元素到id_card_copy[]数组当中
-	/*
-		for j := 0; j < 17; j++ {
-			id_card_copy[j] = id_card[j]
-
-			//fmt.Println(byte2int(id_card[j]))
-		}
-	*/
-
-	/*
-		fmt.Println(byte2int(id_card[17]))
-		fmt.Println(string(id_card[17]))
-	*/
-	/*
-		y := check_id(id_card_copy)
-		fmt.Println(y)
-	*/
-
-	//CheckYMD(PrintDate(YearMonthDay))
+	app.Run(os.Args)
 }
 
 //测试身份证号码：34052419800101001X

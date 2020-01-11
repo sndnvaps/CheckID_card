@@ -5,25 +5,19 @@
 [![Build Status](https://travis-ci.org/sndnvaps/CheckID_card.svg?branch=master)](http://travis-ci.org/sndnvaps/CheckID_card)
 
 
-[![Gobuild Download](http://beta.gobuild.io/badge/github.com/sndnvaps/CheckID_card/download.png)](http://beta.gobuild.io/github.com/sndnvaps/CheckID_card)
-
 
 
 下载：
 
-got: tool for gobuild
-
-	got install github.com/sndnvaps/CheckID_card
-	
-if you are in linux and not have got installed
-
-	bash -c "$(curl http://beta.gobuild.io/install_got.sh)" got install github.com/sndnvaps/CheckID_card
-
+go
+```
+	go get github.com/sndnvaps/CheckID_card
+```
 
 CheckID_card 用来检验身份证的正确性
 
 计算方法如下:
-
+```
  	ai -> a1 , a2, a3, a4, a5, a6... a17 (a18 是校验码) 身份证前17位对应(ai)
 	wi -> 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 (17位)
 
@@ -39,9 +33,9 @@ CheckID_card 用来检验身份证的正确性
 	y    { 0, 1,  2,  3, 4, 5, 6, 7, 8, 9, 10}
 	a18  { 1, 0, 'X', 9, 8, 7, 6, 5, 4, 3,  2 } -> vefiry[18] = { 1, 0, 'X', 9, 8, 7, 6, 5, 4, ,3, 2};
 
-
+```
  运算效果：
-	
+```bash
 	CheckID_card
 	34052419800101001X
  	身份证号码是 =  34052419800101001X
@@ -55,9 +49,10 @@ CheckID_card 用来检验身份证的正确性
  	身份证最后一位是  3
  	false 验证失败
  
- 
+ ```
  # 15位身份证相关介绍 
- 
+
+ ```go
  bool CheckFifteenCard(const string& idCard)  
 {  
     // 验证出生日期是否正确  
@@ -95,7 +90,7 @@ CheckID_card 用来检验身份证的正确性
     // 15位身份证无校验码  
     return true;  
 }  
-  
+```
 
 
 
